@@ -1,6 +1,14 @@
 import numpy as np
+
+
 def sigmoid (x):
 	return 1 / (1 + np.exp(-x))
+
+
+def normalize (X):
+	mean = np.mean(X, axis=0)
+	std = np.std(X, axis=0)
+	return (X - mean) / std
 
 
 class my_LogisticRegression:
@@ -29,3 +37,21 @@ class my_LogisticRegression:
 		p[p >= 0.5] = 1
 		p[p < 0.5] = 0
 		return p
+	
+	def accuracy (self, y_true, y_pred):
+		return (y_true == y_pred).mean()
+	
+	def precision (self, y_true, y_pred):
+		true_positive = np.sum((y_pred == 1) & (y_true == 1))
+		predicted_positive = np.sum(y_pred == 1)
+		return true_positive / predicted_positive if predicted_positive != 0 else 0
+	
+	def recall (self, y_true, y_pred):
+		true_positive = np.sum((y_pred == 1) & (y_true == 1))
+		actual_positive = np.sum(y_true == 1)
+		return true_positive / actual_positive if actual_positive != 0 else 0
+	
+	def f1_score (self, y_true, y_pred):
+		prec = self.precision(y_true, y_pred)
+		rec = self.recall(y_true, y_pred)
+		return 2 * (prec * rec) / (prec + rec) if (prec + rec) != 0 else 0
